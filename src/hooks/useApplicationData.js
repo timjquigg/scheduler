@@ -1,6 +1,5 @@
 import {useState, useEffect} from "react";
 import axios from 'axios';
-import { getSpots } from "helpers/selectors";
 
 export default function useApplicationData(){
   
@@ -23,6 +22,17 @@ export default function useApplicationData(){
     })
     
   },[]);
+
+  const getSpots = (state, newAppointements) => {
+    const dayIndex = state.days.findIndex(day => day.name === state.day);
+    const currentDay = state.days[dayIndex];
+    const listOfAppointmentIds = currentDay.appointments;
+  
+    const listOfFreeAppointments = listOfAppointmentIds.filter(id => !newAppointements[id].interview);
+  
+    const spots = listOfFreeAppointments.length;
+    return [dayIndex, spots];
+  }
   
   const bookInterview = (id, interview) => {
     const appointment = {

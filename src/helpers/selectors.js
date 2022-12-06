@@ -31,14 +31,3 @@ export function getInterview(state, interview) {
   return {...interview, interviewer:interviewer};
 
 }
-
-export function getSpots(state, newAppointements) {
-  const dayIndex = state.days.findIndex(day => day.name === state.day);
-  const currentDay = state.days[dayIndex];
-  const listOfAppointmentIds = currentDay.appointments;
-
-  const listOfFreeAppointments = listOfAppointmentIds.filter(id => !newAppointements[id].interview);
-
-  const spots = listOfFreeAppointments.length;
-  return [dayIndex, spots];
-}
