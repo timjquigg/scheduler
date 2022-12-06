@@ -5,6 +5,7 @@ export function getAppointmentsForDay(state, day) {
   const appointmentIds = (dayArray.appointments || []);
 
   const appointments = appointmentIds.map(id => state.appointments[id]);
+  appointments.push({id: 'last', time: '5pm'});
   return appointments;
 }
 
