@@ -42,8 +42,8 @@ export default function Application(props) {
       [id]: appointment
     };
     return axios.put(`/api/appointments/${id}`, {interview})
-      .then(() => {
-        setState(prev => ({...prev, appointments}));
+      .then(()=> {
+        setState(prev => ({...prev, appointments}))
       })
   }
   
@@ -58,8 +58,8 @@ export default function Application(props) {
       [id]: appointment
     };
     return axios.delete(`/api/appointments/${id}`)
-    .then(()=> {
-      setState(prev => ({...prev, appointments}));
+    .then(() => {
+      setState(prev => ({...prev, appointments}))
     })
   }
 
