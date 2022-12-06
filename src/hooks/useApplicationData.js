@@ -88,10 +88,6 @@ export default function useApplicationData(){
   useEffect(() => {
   
     const ws = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
-      ws.onopen = () => {
-      
-        ws.send('ping');
-      }
 
       ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
