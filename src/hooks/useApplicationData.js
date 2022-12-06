@@ -1,23 +1,23 @@
 import {useReducer, useEffect} from "react";
 import axios from 'axios';
 
+const getSpots = (state, newAppointements) => {
+  const dayIndex = state.days.findIndex(day => day.name === state.day);
+  const currentDay = state.days[dayIndex];
+  const listOfAppointmentIds = currentDay.appointments;
+
+  const listOfFreeAppointments = listOfAppointmentIds.filter(id => !newAppointements[id].interview);
+
+  const spots = listOfFreeAppointments.length;
+  return [dayIndex, spots];
+}
+
+const SET_DAY = "SET_DAY";
+const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
+const SET_INTERVIEW = "SET_INTERVIEW";
+
 export default function useApplicationData(){
   
-  const getSpots = (state, newAppointements) => {
-    const dayIndex = state.days.findIndex(day => day.name === state.day);
-    const currentDay = state.days[dayIndex];
-    const listOfAppointmentIds = currentDay.appointments;
-  
-    const listOfFreeAppointments = listOfAppointmentIds.filter(id => !newAppointements[id].interview);
-  
-    const spots = listOfFreeAppointments.length;
-    return [dayIndex, spots];
-  }
-
-  const SET_DAY = "SET_DAY";
-  const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
-  const SET_INTERVIEW = "SET_INTERVIEW";
-
   const reducer = (state, action) => {
     
     switch (action.type) {
@@ -84,6 +84,32 @@ export default function useApplicationData(){
     return dispatch({type: SET_INTERVIEW, id, interview: null})
     })
   };
+
+  useEffect(() => {
+  
+    const ws = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
+      ws.onopen = () => {
+      
+        ws.send('ping');
+      }
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log(data);
+
+        if (data.type === 'SET_INTERVIEW') {
+          const type = data.type;
+          const id = data.id || null;
+          const interview = data.interview || null
+          dispatch({type, id, interview});
+        }
+
+      }
+      
+      
+    const cleanUp = ()=> ws.close();
+    return cleanUp
+  },[])
 
 
   return {
