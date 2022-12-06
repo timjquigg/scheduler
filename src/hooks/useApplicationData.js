@@ -1,5 +1,6 @@
 import {useState, useEffect} from "react";
 import axios from 'axios';
+import { getSpots } from "helpers/selectors";
 
 export default function useApplicationData(){
   
@@ -32,10 +33,14 @@ export default function useApplicationData(){
       ...state.appointments,
       [id]: appointment
     };
+    const [today, spots] = getSpots(state, appointments);
+    const day = {...state.days[today], spots:spots};
+    const days = [...state.days];
+    days.splice(today, 1, day);
     return axios.put(`/api/appointments/${id}`, {interview})
-      .then(()=> {
-        setState(prev => ({...prev, appointments}))
-      })
+    .then(()=> {
+      setState(prev => ({...prev, appointments, days}))
+    })
   }
   
   const cancelInterview = (id) => {
@@ -48,11 +53,16 @@ export default function useApplicationData(){
       ...state.appointments,
       [id]: appointment
     };
+    const [today, spots] = getSpots(state, appointments);
+    const day = {...state.days[today], spots:spots};
+    const days = [...state.days]
+    days.splice(today,1,day);
     return axios.delete(`/api/appointments/${id}`)
-    .then(() => {
-      setState(prev => ({...prev, appointments}))
+      .then(() => {
+        setState(prev => ({...prev, appointments, days}))
     })
   }
+
 
 
   return {
