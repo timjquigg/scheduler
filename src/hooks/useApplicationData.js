@@ -105,11 +105,8 @@ export default function useApplicationData(){
 
       }
       
-      
-    const cleanUp = ()=> ws.close();
-    return cleanUp
+    return (()=> ws.close());
   },[])
-
 
   return {
     state,
