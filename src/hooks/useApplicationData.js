@@ -1,15 +1,18 @@
 import {useReducer, useEffect} from "react";
 import axios from 'axios';
 
-const getSpots = (state, newAppointements) => {
+const getSpots = (state, newAppointments) => {
   const dayIndex = state.days.findIndex(day => day.name === state.day);
   const currentDay = state.days[dayIndex];
   const listOfAppointmentIds = currentDay.appointments;
 
-  const listOfFreeAppointments = listOfAppointmentIds.filter(id => !newAppointements[id].interview);
+  const listOfFreeAppointments = listOfAppointmentIds.filter(id => !newAppointments[id].interview);
 
   const spots = listOfFreeAppointments.length;
-  return [dayIndex, spots];
+  const day = {...state.days[dayIndex], spots: spots}
+  const days = [...state.days];
+  days.splice(dayIndex, 1, day);
+  return days;
 }
 
 const SET_DAY = "SET_DAY";
@@ -34,10 +37,7 @@ export default function useApplicationData(){
           ...state.appointments,
           [action.id]: appointment
         };
-        const [today, spots] = getSpots(state, appointments);
-        const day = {...state.days[today], spots:spots};
-        const days = [...state.days];
-        days.splice(today, 1, day);
+        const days = getSpots(state, appointments);
         return {...state, appointments, days}
       }
       default:
