@@ -1,25 +1,26 @@
 import {useReducer, useEffect} from "react";
 import axios from 'axios';
 
-const getSpots = (state, newAppointments) => {
-  const dayIndex = state.days.findIndex(day => day.name === state.day);
-  const currentDay = state.days[dayIndex];
-  const listOfAppointmentIds = currentDay.appointments;
-
-  const listOfFreeAppointments = listOfAppointmentIds.filter(id => !newAppointments[id].interview);
-
-  const spots = listOfFreeAppointments.length;
-  const day = {...state.days[dayIndex], spots: spots}
-  const days = [...state.days];
-  days.splice(dayIndex, 1, day);
-  return days;
-}
-
-const SET_DAY = "SET_DAY";
-const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
-const SET_INTERVIEW = "SET_INTERVIEW";
 
 export default function useApplicationData(){
+  
+  const getSpots = (state, newAppointments) => {
+    const dayIndex = state.days.findIndex(day => day.name === state.day);
+    const currentDay = state.days[dayIndex];
+    const listOfAppointmentIds = currentDay.appointments;
+  
+    const listOfFreeAppointments = listOfAppointmentIds.filter(id => !newAppointments[id].interview);
+  
+    const spots = listOfFreeAppointments.length;
+    const day = {...state.days[dayIndex], spots: spots}
+    const days = [...state.days];
+    days.splice(dayIndex, 1, day);
+    return days;
+  }
+  
+  const SET_DAY = "SET_DAY";
+  const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
+  const SET_INTERVIEW = "SET_INTERVIEW";
   
   const reducer = (state, action) => {
     
