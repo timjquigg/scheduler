@@ -48,9 +48,10 @@
     "sass": "^1.53.0"
   },
   "jest": {
-    "watchPathIgnorePatterns": [
-      "<rootDir>/node_modules/",
-      "<rootDir>/.git/"
+    "collectCoverageFrom": [
+      "src/**/*.jsx",
+      "src/**/*.js",
+      "!src/index.js"
     ]
   }
 }
